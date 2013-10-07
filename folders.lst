@@ -1,0 +1,17 @@
+admin/
+config/
+install/
+test/
+temp/
+tmp/
+upload/
+uploads/
+src/
+UserFiles/
+MY_DIR/
+backup/
+save/
+FCKeditor/
+private/
+.git/
+.svn/
