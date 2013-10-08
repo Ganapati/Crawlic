@@ -59,6 +59,10 @@ def printBanner(banner_file):
 
     print "\n" + "#" * banner_length + "\n"
 
+"""
+Load configuration files
+"""
+
 def loadDorks(dorks_file):
     """ Load dorks from dorks file """
     dorks_list = []
@@ -108,10 +112,42 @@ def googleDorks(url, google_dorks):
         for result in parsed_response['responseData']['results']:
             print "   [!] %s" % result['url']
 
+"""
+Scannings methods
+"""
+
+def scanRobots(url, page_not_found_pattern):
+    print "[*] Starting robots.txt search on %s" % url
+    try:
+        robotsExtract(url, page_not_found_pattern)
+    except KeyboardInterrupt:
+        print "[*] Skip robots.txt parsing"
+
+def scanFolders(url, folders, page_not_found_pattern):
+    print "[*] Starting folder search on %s" % url
+    try:
+        searchFolders(url, folders, page_not_found_pattern)
+    except KeyboardInterrupt:
+        print "[*] Skip folder search"
+
+def scanTemporaryFiles(url):
+    print "[*] Starting temp file search on %s" % args.url
+    try:
+        crawlic = Crawlic()
+        crawlic.start()
+    except KeyboardInterrupt:
+        print "[*] Skip temp file search"
+
+def scanGoogleDorks(url, google_dorks):
+    print "[*] Starting Google dorking on %s" % url
+    try:
+        googleDorks(url, google_dorks)
+    except KeyboardInterrupt:
+        print "[*] Skip Google dorking"
+
 if __name__ == "__main__":
 
     printBanner("./banner.txt")
-
     parser = argparse.ArgumentParser(description='Crawl website for temporary files')
     parser.add_argument('-u', '--url', action="store", dest="url", required=True, help='url')
     parser.add_argument('-e', '--extensions', action="store", dest="extensions", default="extensions.lst", help='extensions')
@@ -119,7 +155,10 @@ if __name__ == "__main__":
     parser.add_argument('-f', '--folders', action="store", dest="folders", default="folders.lst", help='folders')
     parser.add_argument('-a', '--agent', action="store", dest="user_agent", default="user_agent.lst", help='user agent file')
     parser.add_argument('-g', '--google', action="store", dest="google_dorks", default="google_dorks.lst", help='google dorks file')
+    parser.add_argument('-t', '--techniques', action="store", dest="techniques", default="rtfg", help='scan techniques (r: robots.txt t: temp files, f: folders, g: google dorks)')
     args = parser.parse_args()
+
+    print "[*] Scan using techniques %s" % args.techniques
 
     (protocol, domain) = args.url.split("://")
 
@@ -144,13 +183,15 @@ if __name__ == "__main__":
             }
 
     # Start recon here
-    print "[*] Starting robots.txt search on %s" % args.url
-    robotsExtract(args.url, page_not_found_pattern)
-    print "[*] Starting folder search on %s" % args.url
-    searchFolders(args.url, args.folders, page_not_found_pattern)
-    print "[*] Starting temp file search on %s" % args.url
-    crawlic = Crawlic()
-    crawlic.start()
-    print "[*] Starting Google dorking on %s" % args.url
-    googleDorks(args.url, google_dorks)
+    for technique in args.techniques:
+        if technique == "r":
+            scanRobots(args.url, page_not_found_pattern)
+        elif technique == "f":
+            scanFolders(args.url, args.folders, page_not_found_pattern)
+        elif technique == "t":
+            scanTemporaryFiles(args.url)
+        elif technique == "g":
+            scanGoogleDorks(args.url, google_dorks)
+        else :
+            print "[*] unknown technique : %s" % technique
     print "[*] Crawling finished"
