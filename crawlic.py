@@ -10,6 +10,10 @@ import json
 
 user_agent_list = []
 
+"""
+Crawler definition
+"""
+
 class Crawlic(Pholcidae):
     """ Base Class for crawler """
 
@@ -23,44 +27,6 @@ class Crawlic(Pholcidae):
                     print "   [!] %s" % url + extension
             except:
                 pass
-
-def getPageNotFoundPattern(url):
-    """ Get a pattern for 404 page (if server return 200 on 404) """
-    if url[:-1] != "/":
-        url = url + "/"
-    pattern = ""
-    random_string = ''.join([random.choice(string.letters) for c in xrange(0, random.randint(5,30))])
-    url = url + random_string
-    response = requests.get(url, headers={"referer" : url, "User-Agent" : getRandomUserAgent()}, verify=False)
-    if "404" in response.text:
-        pattern = "404"
-    elif "not found" in response.text:
-        pattern = "not found"
-    return pattern
-
-def robotsExtract(url, pattern):
-    """ Parse robots.txt file """
-    if url[:-1] != "/":
-        url = url + "/"
-    url = url + "robots.txt"
-    response = requests.get(url, headers={"referer" : url, "User-Agent" : getRandomUserAgent()}, verify=False)
-    if response.status_code == 200 and pattern not in response.text:
-        for line in response.text.split("\n"):
-            if not line.strip().startswith("#") and not line.strip().lower().startswith("sitemap") and not line.strip().lower().startswith("user") and line.strip() != "":
-                line = line.split("#")[0]
-                (rule, path) = line.split(":")
-                if rule.lower() == "disallow":
-                    print "   [!] %s" % path
-
-def printBanner(banner_file):
-    """ Print a fucking awesome ascii art banner """
-    banner_length = 0
-    for line in [line.rstrip() for line in open(banner_file)]:
-        print line
-        if len(line) > banner_length:
-            banner_length = len(line)
-
-    print "\n" + "#" * banner_length + "\n"
 
 """
 Load configuration files
@@ -92,9 +58,55 @@ def loadGoogleDorks(google_dorks_file):
         google_dorks_list.append(line)
     return google_dorks_list
 
+"""
+Usefull methods
+"""
+
+def getPageNotFoundPattern(url):
+    """ Get a pattern for 404 page (if server return 200 on 404) """
+    if url[:-1] != "/":
+        url = url + "/"
+    pattern = ""
+    random_string = ''.join([random.choice(string.letters) for c in xrange(0, random.randint(5,30))])
+    url = url + random_string
+    response = requests.get(url, headers={"referer" : url, "User-Agent" : getRandomUserAgent()}, verify=False)
+    if "404" in response.text:
+        pattern = "404"
+    elif "not found" in response.text:
+        pattern = "not found"
+    return pattern
+
 def getRandomUserAgent():
     """ return a random user agent from the list loaded in previous method """
     return random.choice(user_agent_list)
+
+def printBanner(banner_file):
+    """ Print a fucking awesome ascii art banner """
+    banner_length = 0
+    for line in [line.rstrip() for line in open(banner_file)]:
+        print line
+        if len(line) > banner_length:
+            banner_length = len(line)
+
+    print "\n" + "#" * banner_length + "\n"
+
+"""
+Recon methods
+"""
+
+def robotsExtract(url, pattern):
+    """ Parse robots.txt file """
+    if url[:-1] != "/":
+        url = url + "/"
+    url = url + "robots.txt"
+    response = requests.get(url, headers={"referer" : url, "User-Agent" : getRandomUserAgent()}, verify=False)
+    if response.status_code == 200 and pattern not in response.text:
+        for line in response.text.split("\n"):
+            if not line.strip().startswith("#") and not line.strip().lower().startswith("sitemap") and not line.strip().lower().startswith("user") and line.strip() != "":
+                line = line.split("#")[0]
+                (rule, path) = line.split(":")
+                if rule.lower() == "disallow":
+                    print "   [!] %s" % path
 
 def searchFolders(url, folders_file, pattern):
     """ Search for interresting folders like /private, /admin etc... """
@@ -107,6 +119,7 @@ def searchFolders(url, folders_file, pattern):
             print "   [!] /%s" % line
 
 def googleDorks(url, google_dorks):
+    """ Use google dorks to retrieve informations on target """
     for google_dork in google_dorks:
         dork = google_dork % url
         google_url = 'http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=%s' % dork
@@ -120,6 +133,7 @@ Scannings methods
 """
 
 def scanRobots(url, page_not_found_pattern):
+    """ Start scan using robots.txt """
     print "[*] Starting robots.txt search"
     try:
         robotsExtract(url, page_not_found_pattern)
@@ -127,6 +141,7 @@ def scanRobots(url, page_not_found_pattern):
         print "[*] Skip robots.txt parsing"
 
 def scanFolders(url, folders, page_not_found_pattern):
+    """ Start scan using folder list """
     print "[*] Starting folder search"
     try:
         searchFolders(url, folders, page_not_found_pattern)
@@ -134,6 +149,7 @@ def scanFolders(url, folders, page_not_found_pattern):
         print "[*] Skip folder search"
 
 def scanTemporaryFiles(url):
+    """ Start scan using temporary files extensions """
     print "[*] Starting temp file search"
     try:
         crawlic = Crawlic()
@@ -142,11 +158,16 @@ def scanTemporaryFiles(url):
         print "[*] Skip temp file search"
 
 def scanGoogleDorks(url, google_dorks):
+    """ Start scan using google dorks """
     print "[*] Starting Google dorking"
     try:
         googleDorks(url, google_dorks)
     except KeyboardInterrupt:
         print "[*] Skip Google dorking"
+
+"""
+Entry point
+"""
 
 if __name__ == "__main__":
 
