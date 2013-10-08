@@ -1,0 +1,4 @@
+site:%s allintitle:"index of"
+site:%s filetype:txt
+site:%s filetype:db
+site:%s filetype:log

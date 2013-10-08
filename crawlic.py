@@ -6,6 +6,7 @@ import random
 import requests
 import itertools
 import string
+import json
 
 user_agent_list = []
 
@@ -77,6 +78,13 @@ def loadUserAgents(user_agent_file):
     for line in [line.strip() for line in open(user_agent_file)]:
         user_agent_list.append(line)
 
+def loadGoogleDorks(google_dorks_file):
+    """ Load google dorks from google_dorks_file """
+    google_dorks_list = []
+    for line in [line.strip() for line in open(google_dorks_file)]:
+        google_dorks_list.append(line)
+    return google_dorks_list
+
 def getRandomUserAgent():
     """ return a random user agent from the list loaded in previous method """
     return random.choice(user_agent_list)
@@ -91,6 +99,15 @@ def searchFolders(url, folders_file, pattern):
         if response.status_code == 200 and pattern not in response.text:
             print "   [!] %s%s" % (url, line)
 
+def googleDorks(url, google_dorks):
+    for google_dork in google_dorks:
+        dork = google_dork % url
+        google_url = 'http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=%s' % dork
+        response = requests.get(google_url, headers={"referer" : "http://google.com/", "User-Agent" : getRandomUserAgent()}, verify=False)
+        parsed_response = json.loads(response.text)
+        for result in parsed_response['responseData']['results']:
+            print "   [!] %s" % result['url']
+
 if __name__ == "__main__":
 
     printBanner("./banner.txt")
@@ -101,6 +118,7 @@ if __name__ == "__main__":
     parser.add_argument('-d', '--dorks', action="store", dest="dorks", default="dorks.lst", help='dorks')
     parser.add_argument('-f', '--folders', action="store", dest="folders", default="folders.lst", help='folders')
     parser.add_argument('-a', '--agent', action="store", dest="user_agent", default="user_agent.lst", help='user agent file')
+    parser.add_argument('-g', '--google', action="store", dest="google_dorks", default="google_dorks.lst", help='google dorks file')
     args = parser.parse_args()
 
     (protocol, domain) = args.url.split("://")
@@ -109,6 +127,7 @@ if __name__ == "__main__":
     loadUserAgents(args.user_agent)
     Crawlic.extension_list = loadDorks(args.dorks)
     page_not_found_pattern = getPageNotFoundPattern(args.url)
+    google_dorks = loadGoogleDorks(args.google_dorks)
 
     # Configure crawler
     Crawlic.page_not_found_pattern = page_not_found_pattern
@@ -132,4 +151,6 @@ if __name__ == "__main__":
     print "[*] Starting temp file search on %s" % args.url
     crawlic = Crawlic()
     crawlic.start()
+    print "[*] Starting Google dorking on %s" % args.url
+    googleDorks(args.url, google_dorks)
     print "[*] Crawling finished"
