@@ -117,21 +117,21 @@ Scannings methods
 """
 
 def scanRobots(url, page_not_found_pattern):
-    print "[*] Starting robots.txt search on %s" % url
+    print "[*] Starting robots.txt search"
     try:
         robotsExtract(url, page_not_found_pattern)
     except KeyboardInterrupt:
         print "[*] Skip robots.txt parsing"
 
 def scanFolders(url, folders, page_not_found_pattern):
-    print "[*] Starting folder search on %s" % url
+    print "[*] Starting folder search"
     try:
         searchFolders(url, folders, page_not_found_pattern)
     except KeyboardInterrupt:
         print "[*] Skip folder search"
 
 def scanTemporaryFiles(url):
-    print "[*] Starting temp file search on %s" % args.url
+    print "[*] Starting temp file search"
     try:
         crawlic = Crawlic()
         crawlic.start()
@@ -139,7 +139,7 @@ def scanTemporaryFiles(url):
         print "[*] Skip temp file search"
 
 def scanGoogleDorks(url, google_dorks):
-    print "[*] Starting Google dorking on %s" % url
+    print "[*] Starting Google dorking"
     try:
         googleDorks(url, google_dorks)
     except KeyboardInterrupt:
@@ -158,7 +158,7 @@ if __name__ == "__main__":
     parser.add_argument('-t', '--techniques', action="store", dest="techniques", default="rtfg", help='scan techniques (r: robots.txt t: temp files, f: folders, g: google dorks)')
     args = parser.parse_args()
 
-    print "[*] Scan using techniques %s" % args.techniques
+    print "[*] Scan %s using techniques %s" % (args.url, args.techniques)
 
     (protocol, domain) = args.url.split("://")
 
