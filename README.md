@@ -1,7 +1,7 @@
 Crawlic
 =======
 
-web crawler (find temporary files, parse robots.txt and search some folders)
+web crawler (find temporary files, parse robots.txt, search folders and google dorks)
 
 Usage :
 -------
