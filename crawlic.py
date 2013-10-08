@@ -186,7 +186,6 @@ if __name__ == "__main__":
 
     print "[*] Scan %s using techniques %s" % (args.url, args.techniques)
 
-    # (protocol, domain) = args.url.split("://")
     url = urlparse(args.url)
     if not url.scheme:
         args.url = 'http://' + args.url
