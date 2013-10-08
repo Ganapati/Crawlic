@@ -7,6 +7,7 @@ import requests
 import itertools
 import string
 import json
+from urlparse import urlparse
 
 user_agent_list = []
 
@@ -184,7 +185,13 @@ if __name__ == "__main__":
 
     print "[*] Scan %s using techniques %s" % (args.url, args.techniques)
 
-    (protocol, domain) = args.url.split("://")
+    # (protocol, domain) = args.url.split("://")
+    url = urlparse(args.url)
+    if not url.scheme:
+        args.url = 'http://' + args.url
+        url = urlparse(args.url)
+
+    protocol, domain = url.scheme, url.netloc
 
     # Load configuration from files
     loadUserAgents(args.user_agent)
