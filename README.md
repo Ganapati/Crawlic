@@ -6,7 +6,15 @@ web crawler (find temporary files, parse robots.txt and search some folders)
 Usage :
 -------
 ### start scan :
-./crawlic.py -u http://site.tld/
+./crawlic.py -u http://site.tld/ -t rtf
+
+-t : techniques to use for scanning (default rtfg):
+    - r : robots.txt
+    - t : temporary files (~, .bak, etc)
+    - f : folders
+    - g : google dorks
+
+### Output :
 
     [*] Starting robots.txt search on http://site.tld
        [!]  /hidden_file.php
