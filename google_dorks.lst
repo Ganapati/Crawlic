@@ -15,3 +15,4 @@ site:%s filetype:xls
 site:%s filetype:pdf
 site:%s filetype:xml
 site:%s filetype:inc
+site:%s filetype:conf
