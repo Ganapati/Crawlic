@@ -7,6 +7,7 @@ import requests
 import itertools
 import string
 import json
+from urlparse import urlparse
 
 user_agent_list = []
 
@@ -175,17 +176,23 @@ if __name__ == "__main__":
     printBanner("./banner.txt")
     parser = argparse.ArgumentParser(description='Crawl website for temporary files')
     parser.add_argument('-u', '--url', action="store", dest="url", required=True, help='url')
-    parser.add_argument('-e', '--extensions', action="store", dest="extensions", default="extensions.lst", help='extensions')
-    parser.add_argument('-d', '--dorks', action="store", dest="dorks", default="dorks.lst", help='dorks')
-    parser.add_argument('-f', '--folders', action="store", dest="folders", default="folders.lst", help='folders')
-    parser.add_argument('-a', '--agent', action="store", dest="user_agent", default="user_agent.lst", help='user agent file')
-    parser.add_argument('-g', '--google', action="store", dest="google_dorks", default="google_dorks.lst", help='google dorks file')
+    parser.add_argument('-e', '--extensions', action="store", dest="extensions", default="lists/extensions.lst", help='extensions')
+    parser.add_argument('-d', '--dorks', action="store", dest="dorks", default="lists/dorks.lst", help='dorks')
+    parser.add_argument('-f', '--folders', action="store", dest="folders", default="lists/folders.lst", help='folders')
+    parser.add_argument('-a', '--agent', action="store", dest="user_agent", default="lists/user_agent.lst", help='user agent file')
+    parser.add_argument('-g', '--google', action="store", dest="google_dorks", default="lists/google_dorks.lst", help='google dorks file')
     parser.add_argument('-t', '--techniques', action="store", dest="techniques", default="rtfg", help='scan techniques (r: robots.txt t: temp files, f: folders, g: google dorks)')
     args = parser.parse_args()
 
     print "[*] Scan %s using techniques %s" % (args.url, args.techniques)
 
-    (protocol, domain) = args.url.split("://")
+    # (protocol, domain) = args.url.split("://")
+    url = urlparse(args.url)
+    if not url.scheme:
+        args.url = 'http://' + args.url
+        url = urlparse(args.url)
+
+    protocol, domain = url.scheme, url.netloc
 
     # Load configuration from files
     loadUserAgents(args.user_agent)
