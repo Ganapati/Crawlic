@@ -17,9 +17,12 @@ class Crawlic(Pholcidae):
         """ called every link fetched """
         url = data.url.split("?")[0].split("#")[0]
         for extension in Crawlic.extension_list:
-            response = requests.get(url + extension, verify=False)
-            if response.status_code == 200 and Crawlic.page_not_found_pattern not in response.text:
-                print "   [!] %s" % url + extension
+            try:
+                response = requests.get(url + extension, verify=False)
+                if response.status_code == 200 and Crawlic.page_not_found_pattern not in response.text:
+                    print "   [!] %s" % url + extension
+            except:
+                pass
 
 def getPageNotFoundPattern(url):
     """ Get a pattern for 404 page (if server return 200 on 404) """
