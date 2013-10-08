@@ -101,7 +101,7 @@ def searchFolders(url, folders_file, pattern):
     for line in [line.strip() for line in open(folders_file)]:
         response = requests.get(url + line, headers={"referer" : url, "User-Agent" : getRandomUserAgent()}, verify=False)
         if response.status_code == 200 and pattern not in response.text:
-            print "   [!] %s" % line
+            print "   [!] /%s" % line
 
 def googleDorks(url, google_dorks):
     for google_dork in google_dorks:
