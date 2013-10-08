@@ -20,13 +20,14 @@ class Crawlic(Pholcidae):
     def crawl(self, data):
         """ called every link fetched """
         url = data.url.split("?")[0].split("#")[0]
+        print url
         for extension in Crawlic.extension_list:
             try:
                 response = requests.get(url + extension, verify=False)
                 if response.status_code == 200 and Crawlic.page_not_found_pattern not in response.text:
-                    print "   [!] %s" % url + extension
-            except:
-                pass
+                    print "   [+] %s" % url + extension
+            except requests.exceptions.ConnectionError as e:
+                print "[!] %s : %s" % (url, e)
 
 """
 Load configuration files
@@ -106,7 +107,7 @@ def robotsExtract(url, pattern):
                 line = line.split("#")[0]
                 (rule, path) = line.split(":")
                 if rule.lower() == "disallow":
-                    print "   [!] %s" % path
+                    print "   [+] %s" % path
 
 def searchFolders(url, folders_file, pattern):
     """ Search for interresting folders like /private, /admin etc... """
@@ -116,7 +117,7 @@ def searchFolders(url, folders_file, pattern):
     for line in [line.strip() for line in open(folders_file)]:
         response = requests.get(url + line, headers={"referer" : url, "User-Agent" : getRandomUserAgent()}, verify=False)
         if response.status_code == 200 and pattern not in response.text:
-            print "   [!] /%s" % line
+            print "   [+] /%s" % line
 
 def googleDorks(url, google_dorks):
     """ Use google dorks to retrieve informations on target """
@@ -126,7 +127,7 @@ def googleDorks(url, google_dorks):
         response = requests.get(google_url, headers={"referer" : "http://google.com/", "User-Agent" : getRandomUserAgent()}, verify=False)
         parsed_response = json.loads(response.text)
         for result in parsed_response['responseData']['results']:
-            print "   [!] %s" % result['url']
+            print "   [+] %s" % result['url']
 
 """
 Scannings methods
@@ -138,7 +139,7 @@ def scanRobots(url, page_not_found_pattern):
     try:
         robotsExtract(url, page_not_found_pattern)
     except KeyboardInterrupt:
-        print "[*] Skip robots.txt parsing"
+        print "[!] Skip robots.txt parsing"
 
 def scanFolders(url, folders, page_not_found_pattern):
     """ Start scan using folder list """
@@ -146,7 +147,7 @@ def scanFolders(url, folders, page_not_found_pattern):
     try:
         searchFolders(url, folders, page_not_found_pattern)
     except KeyboardInterrupt:
-        print "[*] Skip folder search"
+        print "[!] Skip folder search"
 
 def scanTemporaryFiles(url):
     """ Start scan using temporary files extensions """
@@ -155,7 +156,7 @@ def scanTemporaryFiles(url):
         crawlic = Crawlic()
         crawlic.start()
     except KeyboardInterrupt:
-        print "[*] Skip temp file search"
+        print "[!] Skip temp file search"
 
 def scanGoogleDorks(url, google_dorks):
     """ Start scan using google dorks """
@@ -163,7 +164,7 @@ def scanGoogleDorks(url, google_dorks):
     try:
         googleDorks(url, google_dorks)
     except KeyboardInterrupt:
-        print "[*] Skip Google dorking"
+        print "[!] Skip Google dorking"
 
 """
 Entry point
