@@ -2,3 +2,16 @@ site:%s allintitle:"index of"
 site:%s filetype:txt
 site:%s filetype:db
 site:%s filetype:log
+site:%s filetype:csv
+site:%s filetype:bak
+site:%s filetype:backup
+site:%s filetype:rar
+site:%s filetype:zip
+site:%s filetype:gz
+site:%s filetype:bz
+site:%s filetype:bz2
+site:%s filetype:sql
+site:%s filetype:xls
+site:%s filetype:pdf
+site:%s filetype:xml
+site:%s filetype:inc

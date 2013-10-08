@@ -17,9 +17,9 @@ class Crawlic(Pholcidae):
         """ called every link fetched """
         url = data.url.split("?")[0].split("#")[0]
         for extension in Crawlic.extension_list:
-            response = requests.get(data.url + extension, verify=False)
+            response = requests.get(url + extension, verify=False)
             if response.status_code == 200 and Crawlic.page_not_found_pattern not in response.text:
-                print "   [!] %s" % data.url + extension
+                print "   [!] %s" % url + extension
 
 def getPageNotFoundPattern(url):
     """ Get a pattern for 404 page (if server return 200 on 404) """
@@ -43,7 +43,7 @@ def robotsExtract(url, pattern):
     response = requests.get(url, headers={"referer" : url, "User-Agent" : getRandomUserAgent()}, verify=False)
     if response.status_code == 200 and pattern not in response.text:
         for line in response.text.split("\n"):
-            if not line.strip().startswith("#") and not line.strip().lower().startswith("user") and line.strip() != "":
+            if not line.strip().startswith("#") and not line.strip().lower().startswith("sitemap") and not line.strip().lower().startswith("user") and line.strip() != "":
                 line = line.split("#")[0]
                 (rule, path) = line.split(":")
                 if rule.lower() == "disallow":
@@ -97,7 +97,7 @@ def searchFolders(url, folders_file, pattern):
     for line in [line.strip() for line in open(folders_file)]:
         response = requests.get(url + line, headers={"referer" : url, "User-Agent" : getRandomUserAgent()}, verify=False)
         if response.status_code == 200 and pattern not in response.text:
-            print "   [!] %s%s" % (url, line)
+            print "   [!] %s" % line
 
 def googleDorks(url, google_dorks):
     for google_dork in google_dorks:
