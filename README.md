@@ -9,10 +9,10 @@ Usage :
 ./crawlic.py -u http://site.tld/ -t rtf
 
 -t : techniques to use for scanning (default rtfg):
-    - r : robots.txt
-    - t : temporary files (~, .bak, etc)
-    - f : folders
-    - g : google dorks
+  - r : robots.txt
+  - t : temporary files (~, .bak, etc)
+  - f : folders
+  - g : google dorks
 
 ### Output :
 
