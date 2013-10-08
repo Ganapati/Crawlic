@@ -36,6 +36,10 @@ Edit extensions.lst, one file extension per line
 
 Edit dorks.lst, one dork per line
 
+### Change google dorks list :
+
+Edit google_dorks, one dork per line, use %s as target url
+
 License
 =======
 
