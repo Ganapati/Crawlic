@@ -4,7 +4,6 @@ from pholcidae import Pholcidae
 import argparse
 import random
 import requests
-import itertools
 import string
 import json
 from urlparse import urlparse
