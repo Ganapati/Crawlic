@@ -8,7 +8,6 @@ import string
 import json
 from urlparse import urlparse
 import socket
-import urllib2
 import time
 import re
 
@@ -138,18 +137,13 @@ def reverseDns(ip, query_numbers):
         domains = []
         while page_counter < query_numbers:
             try:
-                bing_web = 'http://www.bing.com/search?q=ip%3a'+str(ip)+'&go=&filt=all&first=' + repr(page_counter) + '&FORM=PERE'
-                request_web = urllib2.Request(bing_web)
-                request_web.add_header('User-Agent', getRandomUserAgent())
-                openBING = urllib2.build_opener()
-                text = openBING.open(request_web).read()
-                names = (re.findall('\/\/\w+\.\w+\-{0,2}\w+\.\w{2,4}',text))
+                bing_url = 'http://www.bing.com/search?q=ip%3a'+str(ip)+'&go=&filt=all&first=' + repr(page_counter) + '&FORM=PERE'
+                response = requests.get(bing_url, headers={"User-Agent" : getRandomUserAgent()})
+                names = (re.findall('\/\/\w+\.\w+\-{0,2}\w+\.\w{2,4}',response.text))
                 for name in names:
-                    web = name[2:]
-                    get_ip = socket.gethostbyname_ex(web)
-                    if (get_ip[2][0] == ip):
-                        if web not in domains:
-                            domains.append(web)
+                    get_ip = socket.gethostbyname_ex(name[2:])
+                    if get_ip[2][0] == ip and name[2:] not in domains:
+                        domains.append(name[2:])
             except:
                 pass
             page_counter += 10
