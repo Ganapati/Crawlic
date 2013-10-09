@@ -8,11 +8,12 @@ Usage :
 ### start scan :
 ./crawlic.py -u http://site.tld/ -t rtf
 
--t : techniques to use for scanning (default rtfg):
+-t : techniques to use for scanning (default rtfgd):
   - r : robots.txt
   - t : temporary files (~, .bak, etc)
   - f : folders
   - g : google dorks
+  - d : reverse dns search (via bing)
 
 ### Output :
 

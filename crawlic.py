@@ -7,6 +7,10 @@ import requests
 import string
 import json
 from urlparse import urlparse
+import socket
+import urllib2
+import time
+import re
 
 user_agent_list = []
 
@@ -129,6 +133,29 @@ def googleDorks(url, google_dorks):
         for result in parsed_response['responseData']['results']:
             print "   [+] %s" % result['url']
 
+def reverseDns(ip, query_numbers):
+        page_counter = 1
+        domains = []
+        while page_counter < query_numbers:
+            try:
+                bing_web = 'http://www.bing.com/search?q=ip%3a'+str(ip)+'&go=&filt=all&first=' + repr(page_counter) + '&FORM=PERE'
+                request_web = urllib2.Request(bing_web)
+                request_web.add_header('User-Agent', getRandomUserAgent())
+                openBING = urllib2.build_opener()
+                text = openBING.open(request_web).read()
+                names = (re.findall('\/\/\w+\.\w+\-{0,2}\w+\.\w{2,4}',text))
+                for name in names:
+                    web = name[2:]
+                    get_ip = socket.gethostbyname_ex(web)
+                    if (get_ip[2][0] == ip):
+                        if web not in domains:
+                            domains.append(web)
+            except:
+                pass
+            page_counter += 10
+            time.sleep(0.5)
+        return domains
+
 """
 Scannings methods
 """
@@ -166,6 +193,16 @@ def scanGoogleDorks(url, google_dorks):
     except KeyboardInterrupt:
         print "[!] Skip Google dorking"
 
+def scanReverseDns(url):
+    """ Start reverse DNS search by bing """
+    print "[*] Searching domains on same server"
+    try:
+        ip = socket.gethostbyname(urlparse(url).netloc)
+        for domain in reverseDns(ip, 50):
+            print "   [+] %s" % domain
+    except KeyboardInterrupt:
+        print "[!] Skip reverse dns search"
+
 """
 Entry point
 """
@@ -180,7 +217,7 @@ if __name__ == "__main__":
     parser.add_argument('-f', '--folders', action="store", dest="folders", default="lists/folders.lst", help='folders')
     parser.add_argument('-a', '--agent', action="store", dest="user_agent", default="lists/user_agent.lst", help='user agent file')
     parser.add_argument('-g', '--google', action="store", dest="google_dorks", default="lists/google_dorks.lst", help='google dorks file')
-    parser.add_argument('-t', '--techniques', action="store", dest="techniques", default="rtfg", help='scan techniques (r: robots.txt t: temp files, f: folders, g: google dorks)')
+    parser.add_argument('-t', '--techniques', action="store", dest="techniques", default="rtfgd", help='scan techniques (r: robots.txt t: temp files, f: folders, g: google dorksi, d: reverse dns)')
     args = parser.parse_args()
 
     print "[*] Scan %s using techniques %s" % (args.url, args.techniques)
@@ -222,6 +259,8 @@ if __name__ == "__main__":
             scanTemporaryFiles(args.url)
         elif technique == "g":
             scanGoogleDorks(args.url, google_dorks)
+        elif technique == "d":
+            scanReverseDns(args.url)
         else :
             print "[*] unknown technique : %s" % technique
     print "[*] Crawling finished"
