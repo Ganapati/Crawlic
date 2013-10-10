@@ -201,8 +201,7 @@ def scanReverseDns(url):
 Entry point
 """
 
-if __name__ == "__main__":
-
+def main():
     printBanner("./banner.txt")
     parser = argparse.ArgumentParser(description='Crawl website for temporary files')
     parser.add_argument('-u', '--url', action="store", dest="url", required=True, help='url')
@@ -222,6 +221,14 @@ if __name__ == "__main__":
         url = urlparse(args.url)
 
     protocol, domain = url.scheme, url.netloc
+
+    # Make sure the host is up
+    print "[*] Probe host %s" % args.url
+    try:
+        requests.head(args.url)
+    except requests.exceptions.ConnectionError:
+        print '[!] Url %s not reachable is down. Aborting' % args.url
+        return
 
     # Load configuration from files
     loadUserAgents(args.user_agent)
@@ -258,3 +265,7 @@ if __name__ == "__main__":
         else :
             print "[*] unknown technique : %s" % technique
     print "[*] Crawling finished"
+
+
+if __name__ == "__main__":
+    main()
