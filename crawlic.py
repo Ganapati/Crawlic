@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from pholcidae import Pholcidae
+from lib.pholcidae import Pholcidae
 import argparse
 import random
 import requests
@@ -23,7 +23,6 @@ class Crawlic(Pholcidae):
     def crawl(self, data):
         """ called every link fetched """
         url = data.url.split("?")[0].split("#")[0]
-        print url
         for extension in Crawlic.extension_list:
             try:
                 response = requests.get(url + extension, verify=False)
