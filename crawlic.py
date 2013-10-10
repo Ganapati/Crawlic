@@ -227,7 +227,7 @@ def main():
     try:
         requests.head(args.url)
     except requests.exceptions.ConnectionError:
-        print '[!] Url %s not reachable is down. Aborting' % args.url
+        print '[!] Url %s not reachable or is down. Aborting' % args.url
         return
 
     # Load configuration from files
