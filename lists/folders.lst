@@ -15,3 +15,4 @@ FCKeditor/
 private/
 .git/
 .svn/
+.git/config
