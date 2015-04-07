@@ -152,7 +152,7 @@ def robotsExtract(url, pattern):
                             headers={"referer": url,
                                      "User-Agent": getRandomUserAgent()},
                             verify=False)
-    if response.status_code == 200 and pattern not in response.text:
+    if response.status_code != 404 and pattern not in response.text:
         for line in response.text.split("\n"):
             if (not line.strip().startswith("#") and
                     not line.strip().lower().startswith("sitemap") and
