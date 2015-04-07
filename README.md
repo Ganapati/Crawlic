@@ -3,6 +3,8 @@ Crawlic
 
 Web recon tool (find temporary files, parse robots.txt, search folders, google dorks and search domains hosted on same server)
 
+Automatic GIT/SVN clone (using dvcs-ripper) if .git or .svn folder if found.
+
 Usage :
 -------
 ### start scan :
@@ -48,6 +50,12 @@ Edit dorks.lst, one dork per line
 ### Change google dorks list :
 
 Edit google_dorks, one dork per line, use %s as target url
+
+Requirements :
+==============
+
+ - Python 2.x
+ - git/svn ripper needs LWP.pm library (Original dvcs ripper: https://github.com/kost/dvcs-ripper)
 
 License
 =======
