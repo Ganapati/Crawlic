@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 from lib.pholcidae import Pholcidae
 import argparse
