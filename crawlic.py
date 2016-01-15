@@ -279,7 +279,7 @@ Entry point
 
 def main():
     path = os.path.dirname(__file__)
-    printBanner(path + "/banner.txt")
+    printBanner(os.path.join(path, "banner.txt"))
     parser = argparse.ArgumentParser(description='Crawl website for'
                                                  'temporary files')
     parser.add_argument('-u',
@@ -292,31 +292,31 @@ def main():
                         '--extensions',
                         action="store",
                         dest="extensions",
-                        default=path + "/lists/extensions.lst",
+                        default=os.path.join(path, "lists", "extensions.lst"),
                         help='extensions')
     parser.add_argument('-d',
                         '--dorks',
                         action="store",
                         dest="dorks",
-                        default=path + "/lists/dorks.lst",
+                        default=os.path.join(path, "lists", "dorks.lst"),
                         help='dorks')
     parser.add_argument('-f',
                         '--folders',
                         action="store",
                         dest="folders",
-                        default=path + "/lists/folders.lst",
+                        default=os.path.join(path, "lists", "folders.lst"),
                         help='folders')
     parser.add_argument('-a',
                         '--agent',
                         action="store",
                         dest="user_agent",
-                        default=path + "/lists/user_agent.lst",
+                        default=os.path.join(path, "lists", "user_agent.lst"),
                         help='user agent file')
     parser.add_argument('-g',
                         '--google',
                         action="store",
                         dest="google_dorks",
-                        default=path + "/lists/google_dorks.lst",
+                        default=os.path.join(path, "lists", "google_dorks.lst"),
                         help='google dorks file')
     parser.add_argument('-t',
                         '--techniques',
