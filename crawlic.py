@@ -4,6 +4,7 @@ from lib.pholcidae import Pholcidae
 import argparse
 import random
 import requests
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
 import string
 import json
 from urlparse import urlparse
@@ -324,9 +325,17 @@ def main():
                         default="rtfgd",
                         help='scan techniques (r: robots.txt t: temp files,'
                              ' f: folders, g: google dorks, d: reverse dns)')
+    parser.add_argument('-k',
+                        '--insecure',
+                        action="store_true",
+                        dest="insecure",
+                        help='suppress invalid certificate warnings')
     args = parser.parse_args()
 
     print "[*] Scan %s using techniques %s" % (args.url, args.techniques)
+
+    if args.insecure:
+        requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
     url = urlparse(args.url)
     if not url.scheme:
