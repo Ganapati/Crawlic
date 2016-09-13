@@ -194,8 +194,12 @@ def googleDorks(url, google_dorks):
                                          "User-Agent": getRandomUserAgent()},
                                 verify=False)
         parsed_response = json.loads(response.text)
-        for result in parsed_response['responseData']['results']:
-            print "   [+] %s" % result['url']
+        try:
+            for result in parsed_response['responseData']['results']:
+                print "   [+] %s" % result['url']
+        except TypeError:
+            # Silently pass if google dorking fail
+            pass
 
 
 def reverseDns(ip, query_numbers):
