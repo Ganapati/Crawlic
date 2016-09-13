@@ -232,6 +232,9 @@ def scanRobots(url, page_not_found_pattern):
         robotsExtract(url, page_not_found_pattern)
     except KeyboardInterrupt:
         print "[!] Skip robots.txt parsing"
+    except requests.exceptions.ConnectionError:
+        print "[!] Connection error during robots.txt parsing"
+
 
 
 def scanFolders(url, folders, page_not_found_pattern):
@@ -241,6 +244,8 @@ def scanFolders(url, folders, page_not_found_pattern):
         searchFolders(url, folders, page_not_found_pattern)
     except KeyboardInterrupt:
         print "[!] Skip folder search"
+    except requests.exceptions.ConnectionError:
+        print "[!] Connection error during folders search parsing"
 
 
 def scanTemporaryFiles(url):
@@ -251,6 +256,8 @@ def scanTemporaryFiles(url):
         crawlic.start()
     except KeyboardInterrupt:
         print "[!] Skip temp file search"
+    except requests.exceptions.ConnectionError:
+        print "[!] Connection error during temporary files search parsing"
 
 
 def scanGoogleDorks(url, google_dorks):
@@ -260,6 +267,8 @@ def scanGoogleDorks(url, google_dorks):
         googleDorks(url, google_dorks)
     except KeyboardInterrupt:
         print "[!] Skip Google dorking"
+    except requests.exceptions.ConnectionError:
+        print "[!] Connection error during google dorking parsing"
 
 
 def scanReverseDns(url):
@@ -271,6 +280,7 @@ def scanReverseDns(url):
             print "   [+] %s" % domain
     except KeyboardInterrupt:
         print "[!] Skip reverse dns search"
+
 
 """
 Entry point
