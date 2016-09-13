@@ -249,7 +249,7 @@ def scanFolders(url, folders, page_not_found_pattern):
     except KeyboardInterrupt:
         print "[!] Skip folder search"
     except requests.exceptions.ConnectionError:
-        print "[!] Connection error during folders search parsing"
+        print "[!] Connection error during folders search"
 
 
 def scanTemporaryFiles(url):
@@ -261,7 +261,7 @@ def scanTemporaryFiles(url):
     except KeyboardInterrupt:
         print "[!] Skip temp file search"
     except requests.exceptions.ConnectionError:
-        print "[!] Connection error during temporary files search parsing"
+        print "[!] Connection error during temporary files search"
 
 
 def scanGoogleDorks(url, google_dorks):
@@ -272,7 +272,7 @@ def scanGoogleDorks(url, google_dorks):
     except KeyboardInterrupt:
         print "[!] Skip Google dorking"
     except requests.exceptions.ConnectionError:
-        print "[!] Connection error during google dorking parsing"
+        print "[!] Connection error during google dorking"
 
 
 def scanReverseDns(url):
