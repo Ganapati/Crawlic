@@ -1,8 +1,13 @@
 .php
-.php3
-.php5
 .asp
 .aspx
 .html
+.jsp
 .xml
 .conf
+.tgz
+.sql
+.bak
+.old
+.tar.gz
+.zip
